@@ -197,13 +197,108 @@ function EliminarUsuarios(req, res){
     })
 }
 
+
+
+// Ver usuarios ROL DOCTOR
+function obtenerDoctores(req, res) {
+
+  if (req.user.rol !== "ROL_ADMIN") {
+    return res.status(500).send({ mensaje: "Solo el administrador tiene permisos" });
+  }
+
+  Usuarios.find({rol: "ROL_DOCTOR"},(err, usuariosEncontrados) => {
+
+    if (err) return res.status(500).send({ mensaje: 'Error al buscar los usuarios' })
+    if (!usuariosEncontrados) return res.status(500).send({ mensaje: 'No existen hoteles' })
+
+    return res.status(200).send({ Usuario: usuariosEncontrados })
+})
+
+}
+
+
+// Ver usuarios ROL USUARIO
+function obtenerUsuarios(req, res) {
+
+  if (req.user.rol !== "ROL_ADMIN") {
+    return res.status(500).send({ mensaje: "Solo el administrador tiene permisos" });
+  }
+
+  Usuarios.find({rol: "ROL_USUARIO"},(err, usuariosEncontrados) => {
+
+    if (err) return res.status(500).send({ mensaje: 'Error al buscar los usuarios' })
+    if (!usuariosEncontrados) return res.status(500).send({ mensaje: 'No existen hoteles' })
+
+    return res.status(200).send({ Usuario: usuariosEncontrados })
+})
+
+}
+
+// Ver doctores ROL USUARIO
+function verDoctoresUser(req, res) {
+
+  if (req.user.rol !== "ROL_USUARIO") {
+    return res.status(500).send({ mensaje: "Solo el usuario tiene permisos" });
+  }
+
+  Usuarios.find({rol: "ROL_DOCTOR"},(err, usuariosEncontrados) => {
+
+    if (err) return res.status(500).send({ mensaje: 'Error al buscar los usuarios' })
+    if (!usuariosEncontrados) return res.status(500).send({ mensaje: 'No existen hoteles' })
+
+    return res.status(200).send({ Usuario: usuariosEncontrados })
+})
+
+}
+
+// Doctores ID
+function buscarUsuariosId(req,res){
+
+  if (req.user.rol !== "ROL_ADMIN") {
+    return res.status(500).send({ mensaje: "Solo el administrador tiene permisos" });
+  }
+
+
+  var idDoc = req.params.idDoctor;
+
+  Usuarios.findById(idDoc,(err, doctorEncontrado)=>{
+
+    if(err) return res.status(500).send({mensaje: 'Error en la peticion'});
+
+    if(!doctorEncontrado) return res.status(404).send({mensaje:'Error al obtener los datos'});
+
+    return res.send({Usuario: doctorEncontrado})
+
+  })    
+}
+
+function editarDoctores(){
+
+  if (req.user.rol !== "ROL_ADMIN") {
+    return res.status(500).send({ mensaje: "Solo el administrador tiene permisos" });
+  }
+
+  var idDoc = req.params.idDoctor;
+  
+  Usuarios.findOneAndDelete({_id:idDoc, idDoctor:req.user.sub},(err, doctorEliminado)=>{
+    if(err) return res.status(400).send({mensaje: 'No puede eliminar el doctor'});
+    return res.status(200).send({empleado: empleadoEliminado})
+  })
+}
+
+
 module.exports ={
     Login,
     EditarUsuarios,
     EliminarUsuarios,
     registrarAdmin,
     registrarUsuarios,
-    registrarDoctor
+    registrarDoctor,
+    obtenerDoctores,
+    obtenerUsuarios,
+    verDoctoresUser,
+    buscarUsuariosId,
+    editarDoctores,
 }
 
 
