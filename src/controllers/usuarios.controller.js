@@ -254,11 +254,6 @@ function verDoctoresUser(req, res) {
 // Doctores ID
 function buscarUsuariosId(req,res){
 
-  if (req.user.rol !== "ROL_ADMIN") {
-    return res.status(500).send({ mensaje: "Solo el administrador tiene permisos" });
-  }
-
-
   var idDoc = req.params.idDoctor;
 
   Usuarios.findById(idDoc,(err, doctorEncontrado)=>{

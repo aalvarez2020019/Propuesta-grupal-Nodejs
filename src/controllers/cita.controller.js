@@ -68,13 +68,23 @@ function obtenerCitasUser(req, res) {
   
 }
 
-
-// obtener citas por id doctor
-function verCitasDoctor(req, res) {
+// obtener citas del doctor
+function obtenerCitasDoctor(req, res) {
 
     if (req.user.rol !== "ROL_DOCTOR") {
         return res.status(500).send({ mensaje: "Solo el usuario tiene permisos" });
     }
+  
+    Citas.find({ doctor: req.user.sub }, (err, citaEncontrada) => {
+  
+      return res.status(200).send({ Usuario: citaEncontrada })
+    })
+  
+}
+
+// obtener citas por id doctor
+function verCitasDoctor(req, res) {
+
   
     const doctor = req.params.doctor;
   
@@ -86,10 +96,31 @@ function verCitasDoctor(req, res) {
   
 }
 
+// Ver cita por id
+function buscarCitaId(req,res){
+
+   
+  
+  
+    var idCita = req.params.idCita;
+  
+    Citas.findById(idCita,(err, citaEncontrada)=>{
+  
+      if(err) return res.status(500).send({mensaje: 'Error en la peticion'});
+  
+      if(!citaEncontrada) return res.status(404).send({mensaje:'Error al obtener los datos'});
+  
+      return res.send({Usuario: citaEncontrada})
+  
+    })    
+}
+
 
 
 module.exports = {
     agregarCita,
     obtenerCitasUser,
-    verCitasDoctor
+    verCitasDoctor,
+    obtenerCitasDoctor,
+    buscarCitaId
 }

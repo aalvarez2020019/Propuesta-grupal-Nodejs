@@ -23,16 +23,14 @@ api.delete('/eliminarUsuarios', md_autentificacion.Auth, usuariosController.Elim
 // VER DOCTORES
 api.get('/obtenerDoctores', md_autentificacion.Auth, usuariosController.obtenerDoctores);
 
-
 // obtener usuarios
 api.get('/obtenerUsuarios', md_autentificacion.Auth, usuariosController.obtenerUsuarios);
-
 
 // ver doctores rol usuario
 api.get('/verDoctoresUser', md_autentificacion.Auth, usuariosController.verDoctoresUser);
 
 // buscar doctores id
-api.get('/buscarUsuariosId/:idDoctor', md_autentificacion.Auth, usuariosController.buscarUsuariosId);
+api.get('/buscarDoctorId/:idDoctor', md_autentificacion.Auth, usuariosController.buscarUsuariosId);
 
 
 module.exports = api
