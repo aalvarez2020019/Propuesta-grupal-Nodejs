@@ -2,6 +2,27 @@ const Usuarios = require('../models/usuarios.model');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('../services/jwt');
 
+
+
+// Editar usuarios
+function editarUsuarios(req, res) {
+
+  var idUser = req.params.idUsuario;
+  var parametros = req.body;
+
+  
+  Usuarios.findByIdAndUpdate(idUser, parametros,{ new: true },(err, editarControl) => {
+
+      if (err) return res.status(500).send({ mensaje: "Error en la peticion" });
+
+      if (!editarControl) return res.status(403).send({ mensaje: "Error al editar el control" });
+
+      return res.status(200).send({ Usuario: editarControl });
+
+    }
+  );
+}
+
 // Registrar administrador por default
 function registrarAdmin() {
 
@@ -160,43 +181,20 @@ function registrarDoctor(req, res) {
 
 
 
-
-// Arreglar la funcion de editar
-function EditarUsuarios(req, res){
-    var parametros = req.body; 
-   
-    if(parametros.nombre&&parametros.apellido){
-
-        Usuarios.findByIdAndUpdate(req.user.sub, 
-            {nombre: parametros.nombre, apellido: parametros.apellido }, {new: true}, 
-            (err, usuarioActualizado)=>{
-                if(err) return res.status(500)
-                    .send({ mensaje: 'Error en esta peticion' });
-                if(!usuarioActualizado) return res.status(500)
-                    .send({ mensaje: 'Error al editar los datos del usuario'});
-                
-                return res.status(200).send({Usuario : usuarioActualizado})            
-        })
-        
-
-
-    } else {
-        return res.status(500).send({ mensaje: 'Solo puede modificar nombre y apellido'});
-    }
-
-}
-
 // ELIMINAR
 function EliminarUsuarios(req, res){
 
-    Usuarios.findByIdAndDelete(req.user.sub, (err, usuarioEliminado)=>{
-        if(err) return res.status(500).send({mensaje: "Error en la peticion"});
-        if(!usuarioEliminado) return res.status(404).send({mensaje: "Error al eliminar usuario"})
+  var idUsuario = req.params.idUsuario;
 
-        return  res.status(200).send({ Usuario: usuarioEliminado });
-    })
+  Usuarios.findByIdAndDelete(idUsuario, (err, usuarioEliminado) => {
+
+    if(err) return res.status(500).send({ mensaje: 'Error en la peticion'});
+    if(!usuarioEliminado) return res.status(404).send( { mensaje: "Error al eliminar"});
+
+    return res.status(200).send({ Usuario: usuarioEliminado});
+})
+
 }
-
 
 
 // Ver usuarios ROL DOCTOR
@@ -267,24 +265,11 @@ function buscarUsuariosId(req,res){
   })    
 }
 
-function editarDoctores(){
 
-  if (req.user.rol !== "ROL_ADMIN") {
-    return res.status(500).send({ mensaje: "Solo el administrador tiene permisos" });
-  }
-
-  var idDoc = req.params.idDoctor;
-  
-  Usuarios.findOneAndDelete({_id:idDoc, idDoctor:req.user.sub},(err, doctorEliminado)=>{
-    if(err) return res.status(400).send({mensaje: 'No puede eliminar el doctor'});
-    return res.status(200).send({empleado: empleadoEliminado})
-  })
-}
 
 
 module.exports ={
     Login,
-    EditarUsuarios,
     EliminarUsuarios,
     registrarAdmin,
     registrarUsuarios,
@@ -293,7 +278,7 @@ module.exports ={
     obtenerUsuarios,
     verDoctoresUser,
     buscarUsuariosId,
-    editarDoctores,
+    editarUsuarios
 }
 
 

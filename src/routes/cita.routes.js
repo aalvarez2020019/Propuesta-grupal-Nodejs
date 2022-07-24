@@ -20,4 +20,11 @@ api.get('/verCitasDoctor/:doctor', md_autentificacion.Auth, citaController.verCi
 // buscar cita id ROL_USUARIO  INFO HOSPITAL Y INFO PROFESIONAL DEL MEDICO
 api.get('/buscarCitaId/:idCita', md_autentificacion.Auth, citaController.buscarCitaId);
 
+// editar usuarios
+api.put("/editarCita/:idCita", md_autentificacion.Auth, citaController.editarCitas);
+
+// eliminar
+api.delete('/eliminarCitas/:idCita', md_autentificacion.Auth, citaController.eliminarCitas);
+
+
 module.exports = api;

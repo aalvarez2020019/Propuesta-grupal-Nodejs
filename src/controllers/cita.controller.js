@@ -35,10 +35,10 @@ function agregarCita (req,res){
         return res.status(500).send({mensaje:'No puede hacer la peticion con campos vacios'})
     } */
   
-    // Citas.findOne({hora: citasModel.hora}, (err, servicioEncontrado)=>{
+    Citas.findOne({hora: citasModel.hora}, (err, servicioEncontrado)=>{
   
-       // if (err) return res.status(500).send({mensaje:'Error al consultar el evento'})
-        // if (servicioEncontrado) return res.status(500).send({mensaje:'Ya esta reservada esa hora'})
+       if (err) return res.status(500).send({mensaje:'Error al consultar el evento'})
+        if (servicioEncontrado) return res.status(500).send({mensaje:'Ya esta reservada esa hora'})
   
         citasModel.save((err, citaGuardada)=>{
 
@@ -49,7 +49,7 @@ function agregarCita (req,res){
             return res.status(200).send({citaGuardada})
         })
 
-    // })
+    })
 }
 
 
@@ -115,6 +115,39 @@ function buscarCitaId(req,res){
     })    
 }
 
+// Editar usuarios
+function editarCitas(req, res) {
+
+    var idUser = req.params.idCita;
+    var parametros = req.body;
+  
+    
+    Citas.findByIdAndUpdate(idUser, parametros,{ new: true },(err, editarControl) => {
+  
+        if (err) return res.status(500).send({ mensaje: "Error en la peticion" });
+  
+        if (!editarControl) return res.status(403).send({ mensaje: "Error al editar el control" });
+  
+        return res.status(200).send({ Usuario: editarControl });
+  
+      }
+    );
+}
+
+// eliminar citas
+function eliminarCitas(req, res){
+
+    var idCita = req.params.idCita;
+  
+    Citas.findByIdAndDelete(idCita, (err, citaEliminada) => {
+  
+      if(err) return res.status(500).send({ mensaje: 'Error en la peticion'});
+      if(!citaEliminada) return res.status(404).send( { mensaje: "Error al eliminar"});
+  
+      return res.status(200).send({ Usuario: citaEliminada});
+  })
+  
+}
 
 
 module.exports = {
@@ -122,5 +155,7 @@ module.exports = {
     obtenerCitasUser,
     verCitasDoctor,
     obtenerCitasDoctor,
-    buscarCitaId
+    buscarCitaId,
+    editarCitas,
+    eliminarCitas
 }

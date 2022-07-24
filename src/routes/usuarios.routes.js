@@ -13,12 +13,8 @@ api.post('/registrarUsuarios', usuariosController.registrarUsuarios);
 // registrar doctores
 api.post('/registrarDoctor', md_autentificacion.Auth, usuariosController.registrarDoctor);
 
-
-// editar y eliminar usuarios
-// api.put('/editarUsuarios', md_autentificacion.Auth, usuariosController.EditarUsuarios);
-
 // eliminar
-api.delete('/eliminarUsuarios', md_autentificacion.Auth, usuariosController.EliminarUsuarios);
+api.delete('/eliminarUsuarios/:idUsuario', md_autentificacion.Auth, usuariosController.EliminarUsuarios);
 
 // VER DOCTORES
 api.get('/obtenerDoctores', md_autentificacion.Auth, usuariosController.obtenerDoctores);
@@ -31,6 +27,9 @@ api.get('/verDoctoresUser', md_autentificacion.Auth, usuariosController.verDocto
 
 // buscar doctores id
 api.get('/buscarDoctorId/:idDoctor', md_autentificacion.Auth, usuariosController.buscarUsuariosId);
+
+// editar usuarios
+api.put("/editarUsuarios/:idUsuario", md_autentificacion.Auth, usuariosController.editarUsuarios);
 
 
 module.exports = api
