@@ -28,4 +28,27 @@ api.get('/obtenerDatosDoctor', md_autentificacion.Auth, doctorController.obtener
 api.get('/datosDoctorId/:doctor', md_autentificacion.Auth, doctorController.datosDoctorId);
 
 
+/* CRUD HOSPITALES */
+// agregar hospital
+api.post('/agregarHospital', md_autentificacion.Auth, doctorController.agregarHospital);
+
+// editar hospitales
+api.put("/editarHospitales/:idHospital", md_autentificacion.Auth, doctorController.editarHospitales);
+
+// eliminar hospitales
+api.delete('/eliminarHospitales/:idHospital', md_autentificacion.Auth, doctorController.eliminarHospitales);
+
+// ver hospitales por admin
+api.get('/verhospitalesAdmin', md_autentificacion.Auth, doctorController.verhospitalesAdmin);
+
+// ver hospitales general
+api.get('/verHospitales', md_autentificacion.Auth, doctorController.verHospitales);
+
+// hospitales id
+api.get('/hospitalesId/:idHospital', md_autentificacion.Auth, doctorController.hospitalesId);
+
+// hospitales inicio
+api.get('/hospitalesInicio', doctorController.hospitalesInicio);
+
+
 module.exports = api;

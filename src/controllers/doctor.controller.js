@@ -1,9 +1,162 @@
 const Usuarios = require('../models/usuarios.model');
 const Citas = require('../models/cita.model');
 const Datos = require('../models/datos.model');
+const Hospitales = require('../models/hospital.model');
+
+// agregar hospital
+function agregarHospital (req,res){
+
+    if (req.user.rol !== "ROL_ADMIN") {
+        return res.status(500).send({ mensaje: "Solo el administrador de la aplicacion tiene permisos" });
+    }
+  
+    let hospitalModel = new Hospitales();
+    let params = req.body;
+  
+    hospitalModel.nombre = params.nombre;
+    hospitalModel.pais = params.pais;
+    hospitalModel.ciudad = params.ciudad;
+    hospitalModel.direccion = params.direccion;
+    hospitalModel.telefono = params.telefono;
+
+
+    
+  
+    /* if (params.nombre == '' || params.descripcion == '' || params.hotel == ''){
+  
+        return res.status(500).send({mensaje:'No puede hacer la peticion con campos vacios'})
+    } */
+  
+    Hospitales.findOne({nombre: hospitalModel.nombre}, (err, servicioEncontrado)=>{
+  
+       if (err) return res.status(500).send({mensaje:'Error al consultar el evento'})
+        if (servicioEncontrado) return res.status(500).send({mensaje:'Ya esta ocupada la habitacion'})
+  
+        hospitalModel.save((err, datosGuardados)=>{
+
+            if (err) return res.status(500).send({mensaje:'Error al guardar los datos'})
+  
+            if (!datosGuardados) return res.status(500).send({mensaje:'La peticion esta vacia'})
+  
+            return res.status(200).send({datosGuardados})
+        })
+
+    })
+}
+
+// Editar hospitales
+function editarHospitales(req, res) {
+
+    var idUser = req.params.idHospital;
+    var parametros = req.body;
+  
+    
+    Hospitales.findByIdAndUpdate(idUser, parametros,{ new: true },(err, editarControl) => {
+  
+        if (err) return res.status(500).send({ mensaje: "Error en la peticion" });
+  
+        if (!editarControl) return res.status(403).send({ mensaje: "Error al editar el control" });
+  
+        return res.status(200).send({ Usuario: editarControl });
+  
+      }
+    );
+}
+
+// eliminar hospitales
+function eliminarHospitales(req, res){
+
+    var idHospital = req.params.idHospital;
+  
+    Hospitales.findByIdAndDelete(idHospital, (err, citaEliminada) => {
+  
+      if(err) return res.status(500).send({ mensaje: 'Error en la peticion'});
+      if(!citaEliminada) return res.status(404).send( { mensaje: "Error al eliminar"});
+  
+      return res.status(200).send({ Usuario: citaEliminada});
+  })
+  
+}
+
+
+// Ver hospitales ROL_ADMIN
+function verhospitalesAdmin(req, res) {
+
+    if (req.user.rol !== "ROL_ADMIN") {
+        return res.status(500).send({ mensaje: "Solo el administrador de la aplicacion tiene permisos" });
+    }
+  
+  
+    Hospitales.find((err, usuariosEncontrados) => {
+  
+      if (err) return res.status(500).send({ mensaje: 'Error al buscar los usuarios' })
+      if (!usuariosEncontrados) return res.status(500).send({ mensaje: 'No existen hoteles' })
+  
+      return res.status(200).send({ Usuario: usuariosEncontrados })
+  })
+  
+  }
+
+  // Ver hospitales ROL_ADMIN
+function verHospitales(req, res) {
+
+  
+  
+    Hospitales.find((err, usuariosEncontrados) => {
+  
+      if (err) return res.status(500).send({ mensaje: 'Error al buscar los usuarios' })
+      if (!usuariosEncontrados) return res.status(500).send({ mensaje: 'No existen hoteles' })
+  
+      return res.status(200).send({ Usuario: usuariosEncontrados })
+  })
+  
+  }
+
+
+  // Buscar hospitales por id
+function hospitalesId(req,res){
+
+    var idHospital = req.params.idHospital;
+  
+    Hospitales.findById(idHospital,(err, encontrado)=>{
+  
+      if(err) return res.status(500).send({mensaje: 'Error en la peticion'});
+  
+      if(!encontrado) return res.status(404).send({mensaje:'Error al obtener los datos'});
+  
+      return res.send({Usuario: encontrado})
+  
+    })    
+}
+
+  // Ver hospitales inicio
+  function hospitalesInicio(req, res) {
+
+  
+  
+    Hospitales.find((err, usuariosEncontrados) => {
+  
+      if (err) return res.status(500).send({ mensaje: 'Error al buscar los usuarios' })
+      if (!usuariosEncontrados) return res.status(500).send({ mensaje: 'No existen hoteles' })
+  
+      return res.status(200).send({ Usuario: usuariosEncontrados })
+  })
+  
+  }
 
 
 
+
+
+
+
+
+
+
+
+
+
+// agregar datos no  dd
 function agregarDatos (req,res){
 
     if (req.user.rol !== "ROL_DOCTOR") {
@@ -161,6 +314,7 @@ function citasDoctor(req, res) {
 }
 
 
+
 module.exports = {
     verUsers,
     citasDoctor,
@@ -169,5 +323,12 @@ module.exports = {
     eliminarDatos,
     buscarDatosId,
     obtenerDatosDoctor,
-    datosDoctorId
+    datosDoctorId,
+    agregarHospital,
+    editarHospitales,
+    eliminarHospitales,
+    verhospitalesAdmin,
+    verHospitales,
+    hospitalesId,
+    hospitalesInicio
 }
